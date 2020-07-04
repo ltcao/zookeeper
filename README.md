@@ -1,4 +1,4 @@
-# Ansible Zookeeper playbook
+# ansible apache zookeeper playbook
 An ansible playbook to setup zookeeper node(s).
 
 ## Installation
