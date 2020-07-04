@@ -1,0 +1,5 @@
+{% for node in groups['nodes'] %}
+{% if ansible_default_ipv4.address == hostvars[node]['ansible_default_ipv4']['address'] %}
+{{ loop.index }}
+{% endif %}
+{% endfor %}

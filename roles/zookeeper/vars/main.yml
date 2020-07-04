@@ -1,0 +1,15 @@
+zk_version: 3.6.1
+zk_package: apache-zookeeper-{{ zk_version }}-bin.tar.gz
+
+zk_path: /opt/apache/zookeeper
+zk_log_path: /opt/apache/zookeeper/data/log
+zk_data_path: /opt/apache/zookeeper/data
+zk_user: zookeeper
+zk_group: zookeeper
+zk_client_port: 2181
+zk_election_port: 3888
+zk_leader_port: 2888
+
+zk_id: 1
+
+zk_dest: /tmp

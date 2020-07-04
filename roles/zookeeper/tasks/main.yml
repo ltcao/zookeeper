@@ -1,0 +1,103 @@
+- name: Create daemon group
+  group:
+    name: '{{ zk_group }}'
+    state: present
+
+- name: Creating daemon user
+  user:
+    name: '{{ zk_user }}'
+    comment: Apache zookeeper service
+    group: '{{ zk_group }}'
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+    state: present
+
+- name: Create install base directory
+  file:
+    path: /opt/apache/
+    state: directory
+    mode: '0755'
+
+- name: Create data directory
+  file:
+    path: /var/lib/zookeeper
+    state: directory
+    mode: '0755'
+    owner: '{{ zk_user }}'
+    group: '{{ zk_group }}'
+
+- name: Create installation directory
+  file:
+    path: "/opt/apache/zookeeper-{{ zk_version }}"
+    state: directory
+    mode: '0755'
+    owner: '{{ zk_user }}'
+    group: '{{ zk_group }}'
+
+- name: Install binary
+  unarchive:
+    src: "files/{{ zk_package }}"
+    dest: "/opt/apache/zookeeper-{{ zk_version }}"
+    extra_opts: [--strip-components=1]
+    owner: '{{ zk_user }}'
+    group: '{{ zk_group }}'
+
+- name: Create sym link to installed binary
+  file:
+    src: "/opt/apache/zookeeper-{{ zk_version }}"
+    dest: "{{ zk_path }}"
+    owner: '{{ zk_user }}'
+    group: '{{ zk_group }}'
+    state: link
+
+- name: Create sym link to data
+  file:
+    src: /var/lib/zookeeper
+    dest: "{{ zk_data_path }}"
+    owner: '{{ zk_user }}'
+    group: '{{ zk_group }}'
+    state: link
+
+- name: Set runtime configuration
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zk_path }}/conf/zoo.cfg"
+    group: '{{ zk_group }}'
+    owner: '{{ zk_user }}'
+
+- name: Set instance id
+  template:
+    src: myid.j2
+    dest: '{{ zk_data_path }}/myid'
+    group: '{{ zk_group }}'
+    owner: '{{ zk_user }}'
+
+- name: Set logging properties
+  copy:
+    src: "files/log4j.properties"
+    dest: "{{ zk_path }}/conf/log4j.properties"
+    group: '{{ zk_group }}'
+    owner: '{{ zk_user }}'
+    mode: '0755'
+
+- name: Install service manifest
+  template:
+    src: zookeeper.service.j2
+    dest: /usr/lib/systemd/system/zookeeper.service
+    owner: '{{ zk_user }}'
+    group: '{{ zk_group }}'
+    mode: '0644'
+
+- name: Start enabled service
+  systemd:
+    name: zookeeper
+    daemon_reload: yes
+    state: started
+    enabled: yes
+
+- name: Modify firewalld rules if firewalld is running
+  include_tasks:
+    file: firewalld.yml
+  when: ansible_facts.services["firewalld.service"] is defined and
+    ansible_facts.services["firewalld.service"].status|lower == 'enabled'

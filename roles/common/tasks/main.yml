@@ -1,0 +1,6 @@
+- name: Gather service facts
+  service_facts:
+
+- name: Install OpenJDK 1.8.0
+  include_tasks: "{{ ansible_os_family|lower }}.yml"
+

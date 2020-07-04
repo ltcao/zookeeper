@@ -1,0 +1,10 @@
+- name: Alter firewalld rules for zookeeper
+  firewalld:
+    port: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+  with_items:
+    - "{{ zk_client_port }}/tcp"
+    - "{{ zk_election_port }}/tcp"
+    - "{{ zk_leader_port }}/tcp"

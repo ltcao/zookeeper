@@ -1,0 +1,8 @@
+- name: Zookeeper Setup
+  become: yes
+  become_method: sudo
+  serial: 3
+  hosts: nodes
+  roles:
+    - { role: common, tags: ['common'] }
+    - { role: zookeeper, tags: ['zookeeper'] }

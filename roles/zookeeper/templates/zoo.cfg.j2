@@ -1,0 +1,11 @@
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir={{ zk_data_path }}
+dataLogDir={{ zk_log_path }}
+clientPort={{ zk_client_port }}
+clientPortAddress={{ ansible_default_ipv4.address }}
+
+{% for node in groups['nodes'] %}
+server.{{ loop.index }}={{ hostvars[node]['ansible_default_ipv4']['address'] }}:{{ zk_leader_port }}:{{ zk_election_port }}
+{% endfor %}

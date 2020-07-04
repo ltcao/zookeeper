@@ -1,0 +1,14 @@
+- name: Install packaging tools
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - ca-certificates
+    - apt-transport-https
+    - software-properties-common
+
+- name: APT install
+  apt:
+    name: openjdk-8-jdk
+    state: latest
+    update_cache: yes
