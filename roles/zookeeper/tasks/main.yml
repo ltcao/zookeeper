@@ -35,6 +35,13 @@
     owner: '{{ zk_user }}'
     group: '{{ zk_group }}'
 
+- name: Prepare for update
+  service:
+    name: zookeeper
+    state: stopped
+  when: ansible_facts.services["zookeper.service"] is defined and
+    ansible_facts.services["zookeper.service"].state == 'running'
+
 - name: Install binary
   unarchive:
     src: "files/{{ zk_package }}"
