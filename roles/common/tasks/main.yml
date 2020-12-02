@@ -4,3 +4,7 @@
 - name: Install OpenJDK 1.8.0
   include_tasks: "{{ ansible_os_family|lower }}.yml"
 
+- set_fact:
+    HOST_IP: "{{ ansible_default_ipv4.address }}"
+    IS_UPGRADE: '{{ ansible_facts.services["zookeeper"] is defined or ansible_facts.services["zookeeper.service"] is defined }}'
+    FIREWALLD_ENABLED: '{{ ansible_facts.services["firewalld.service"] is defined and ansible_facts.services["firewalld.service"].status|lower == "enabled" }}'

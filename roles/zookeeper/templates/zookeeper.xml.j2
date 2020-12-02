@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service version="1.0">
+  <short>zookeeper</short>
+  <description>zookeeper ports.</description>
+  <port protocol="tcp" port="{{ zk_client_port }}"/>
+  <port protocol="tcp" port="{{ zk_election_port }}"/>
+  <port protocol="tcp" port="{{ zk_leader_port }}"/>
+</service>

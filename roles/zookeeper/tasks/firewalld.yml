@@ -1,10 +1,37 @@
-- name: Alter firewalld rules for zookeeper
+- name: Firewalld - stopping service
+  service:
+    name: firewalld
+    state: stopped
+
+- name: Firewalld - create service manifest directory
+  file:
+    path: "{{ firewalld_svc_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Firewalld - add zookeeper service manifest
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ firewalld_svc_path }}/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - zookeeper.xml
+
+- name: Firewalld - add zookeeper service to rule set
   firewalld:
-    port: "{{ item }}"
+    zone: public
+    service: "{{ item }}"
     permanent: yes
     state: enabled
-    immediate: yes
-  with_items:
-    - "{{ zk_client_port }}/tcp"
-    - "{{ zk_election_port }}/tcp"
-    - "{{ zk_leader_port }}/tcp"
+    offline: yes
+  loop:
+    - zookeeper
+
+- name: Firewalld - starting service
+  service:
+    name: firewalld
+    state: started

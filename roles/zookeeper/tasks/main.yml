@@ -106,5 +106,4 @@
 - name: Modify firewalld rules if firewalld is running
   include_tasks:
     file: firewalld.yml
-  when: ansible_facts.services["firewalld.service"] is defined and
-    ansible_facts.services["firewalld.service"].status|lower == 'enabled'
+  when: FIREWALLD_ENABLED
